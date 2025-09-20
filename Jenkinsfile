@@ -4,7 +4,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/richard7594/CI-CD.git'
+                deleteDir()
+                git branch: 'master', url: 'https://github.com/richard7594/CI-CD.git'
             }
         }
 
@@ -33,4 +34,3 @@ pipeline {
         }
     }
 } 
-
