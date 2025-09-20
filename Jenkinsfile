@@ -2,18 +2,12 @@ pipeline {
     agent {
         docker {
             image 'docker:24-dind'
-            args '--privileged -v jenkins-docker:/var/lib/docker'
+            args '--privileged -v jenkins-docker:/var/lib/docker -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
     
     stages {
 
-        stage('Build') {
-            steps {
-                sh 'docker info'
-                sh 'docker build -t demo-ci-cd:latest .'
-            }
-        }
         stage('Checkout') {
             steps {
                 deleteDir()
@@ -21,7 +15,7 @@ pipeline {
             }
         }
 
-        stage('Build1') {
+        stage('Install Dependencies') {
             steps {
                 sh 'npm install'
             }
@@ -35,6 +29,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
+                sh 'docker info'
                 sh 'docker build -t demo-ci-cd:latest .'
             }
         }
@@ -45,4 +40,5 @@ pipeline {
             }
         }
     }
-} 
+}
+
