@@ -1,7 +1,19 @@
 pipeline {
-    agent any
-
+    agent {
+        docker {
+            image 'docker:24-dind'
+            args '--privileged -v jenkins-docker:/var/lib/docker'
+        }
+    }
+    
     stages {
+
+        stage('Build') {
+            steps {
+                sh 'docker info'
+                sh 'docker build -t demo-ci-cd:latest .'
+            }
+        }
         stage('Checkout') {
             steps {
                 deleteDir()
