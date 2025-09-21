@@ -32,6 +32,16 @@ pipeline {
                 sh 'docker-compose up -d --build'
             }
         }
+
+         post {
+        success {
+            echo '✅ Déploiement réussi !'
+        }
+        failure {
+            echo '❌ Le pipeline a échoué.'
+        }
+    }
+        
     }
 }
 
