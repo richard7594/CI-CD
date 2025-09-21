@@ -1,16 +1,9 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:24'
-            args '--privileged -v jenkins-docker:/var/lib/docker -v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
-    
-    stages {
+    agent any
 
+    stages {
         stage('Checkout') {
             steps {
-                deleteDir()
                 git branch: 'master', url: 'https://github.com/richard7594/CI-CD.git'
             }
         }
@@ -29,16 +22,17 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker info'
                 sh 'docker build -t demo-ci-cd:latest .'
             }
         }
 
         stage('Deploy with Docker Compose') {
             steps {
-                sh 'docker-compose down && docker-compose up -d'
+                sh 'docker-compose down || true'
+                sh 'docker-compose up -d --build'
             }
         }
     }
 }
+
 
