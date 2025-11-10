@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     tools {
-        // utilise le bon type pour SonarQube
         "hudson.plugins.sonar.SonarRunnerInstallation" "SonarScanner"
     }
 
@@ -33,10 +32,9 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                // Injection de la configuration SonarQube depuis Jenkins
                 withSonarQubeEnv('MySonar') {
                     sh '''
-                        sonar-scanner \
+                        ${SONAR_RUNNER_HOME}/bin/sonar-scanner \
                           -Dsonar.projectKey=$SONAR_PROJECT_KEY \
                           -Dsonar.projectName=$SONAR_PROJECT_NAME \
                           -Dsonar.sources=$SONAR_SOURCES \
