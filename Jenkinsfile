@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        SONAR_PROJECT_KEY = 'ci-cd-demo'
+        SONAR_PROJECT_NAME = 'ci-cd-demo'
+        SONAR_SOURCES = 'src'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -20,6 +26,22 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                // Injection de la configuration SonarQube depuis Jenkins
+                withSonarQubeEnv('MySonar') {
+                    sh '''
+                        sonar-scanner \
+                          -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                          -Dsonar.projectName=$SONAR_PROJECT_NAME \
+                          -Dsonar.sources=$SONAR_SOURCES \
+                          -Dsonar.host.url=$SONAR_HOST_URL \
+                          -Dsonar.login=$SONAR_AUTH_TOKEN
+                    '''
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t demo-ci-cd:latest .'
@@ -30,6 +52,14 @@ pipeline {
             steps {
                 sh 'docker-compose down || true'
                 sh 'docker-compose up -d --build'
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
     }
