@@ -14,6 +14,28 @@ services:
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
 
+    networks: [ci-net]
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    networks: [ci-net]
+    # recommandé sur Linux (évite erreurs ES)
+#    sysctls:
+#      - vm.max_map_count=524288
+#      - fs.file-max=131072
+
+networks:
+  ci-net: {}
+
 volumes:
   jenkins_home:
-
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
