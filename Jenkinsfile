@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+        // ajoute cette ligne
+        sonarQubeScanner 'SonarScanner'
+    }
+
     environment {
         SONAR_PROJECT_KEY = 'ci-cd-demo'
         SONAR_PROJECT_NAME = 'ci-cd-demo'
