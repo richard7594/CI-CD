@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        // ajoute cette ligne
-        sonarQubeScanner 'SonarScanner'
+        // utilise le bon type pour SonarQube
+        "hudson.plugins.sonar.SonarRunnerInstallation" "SonarScanner"
     }
 
     environment {
