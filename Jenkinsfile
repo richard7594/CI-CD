@@ -30,21 +30,12 @@ pipeline {
             }
         }
 
-       stage('SonarQube Analysis') {
+      stage('SonarQube Analysis') {
   steps {
     withSonarQubeEnv('MySonar') {
       script {
         def scannerHome = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-
-          // Choisit un dossier de sources valide : src, app, backend… sinon la racine
-        def candidates = ['src', 'app', 'backend', 'frontend', '.']
-        def srcDir = candidates.find { fileExists(it) } ?: '.'
-        sh """
-          ${scannerHome}/bin/sonar-scanner \
-            -Dsonar.projectKey=ci-cd-demo \
-            -Dsonar.projectName=ci-cd-demo \
-            -Dsonar.sources=src
-        """
+        sh "${scannerHome}/bin/sonar-scanner"
       }
     }
   }
