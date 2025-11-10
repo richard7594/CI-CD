@@ -35,6 +35,10 @@ pipeline {
     withSonarQubeEnv('MySonar') {
       script {
         def scannerHome = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+
+          // Choisit un dossier de sources valide : src, app, backend… sinon la racine
+        def candidates = ['src', 'app', 'backend', 'frontend', '.']
+        def srcDir = candidates.find { fileExists(it) } ?: '.'
         sh """
           ${scannerHome}/bin/sonar-scanner \
             -Dsonar.projectKey=ci-cd-demo \
